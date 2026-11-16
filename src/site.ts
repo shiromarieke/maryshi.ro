@@ -1,9 +1,9 @@
 // Site-wide settings: name, navigation and social links.
 
 export const site = {
-	name: 'Marie Gutbub',
+	name: 'Marie Kreil',
 	description:
-		'Marie Gutbub, aka shiro: communication, campaigns, events and training around privacy, information security and digital rights.',
+		'Marie Kreil, aka shiro: communication, campaigns, events and training around privacy, information security and digital rights.',
 };
 
 export const nav = [
