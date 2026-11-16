@@ -44,14 +44,18 @@ body::before {
 		linear-gradient(180deg, #fdc7b6 0%, #fcdccb 22%, #fbf3d3 44%, #ecf8dc 60%, #d5f6ea 78%, #c3f4f8 100%);
 }
 
+/* Links: dotted underline = clickable, solid underline = hovered or current page. */
 a {
 	color: var(--ink);
-	text-decoration-thickness: 2px;
-	text-underline-offset: 4px;
+	text-decoration: underline dotted 2px;
+	text-underline-offset: 6px;
 
+	&:hover,
+	&[aria-current='page'] {
+		text-decoration-style: solid;
+	}
 	&:hover {
 		color: var(--ink-strong);
-		background: rgba(255, 255, 255, 0.6);
 	}
 	&:focus-visible {
 		outline: 3px solid var(--ink);
