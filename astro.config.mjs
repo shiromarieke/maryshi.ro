@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import relativeLinks from './integrations/relative-links.mjs';
+import relativeLinks from './integrations/relative-links.ts';
 
 // https://astro.build/config
 export default defineConfig({

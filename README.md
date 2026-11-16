@@ -38,7 +38,7 @@ lang: en
 
 ## Relative URLs
 
-The build makes every URL relative (`integrations/relative-links.mjs`), so the same `dist/` works at
+The build makes every URL relative (`integrations/relative-links.ts`), so the same `dist/` works at
 https://maryshi.ro/ and at https://shiromarieke.github.io/maryshi.ro/. Write links as `/about/` in
 Markdown and components as usual; they are rewritten after the build.
 

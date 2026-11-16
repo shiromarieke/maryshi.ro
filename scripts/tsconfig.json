@@ -9,6 +9,6 @@
 		"allowImportingTsExtensions": true,
 		"types": ["node"]
 	},
-	"include": ["./**/*.ts", "../src/site.ts"],
+	"include": ["./**/*.ts", "../integrations/**/*.ts", "../src/site.ts"],
 	"exclude": []
 }
