@@ -18,7 +18,7 @@ for (const post of posts) {
 
 const day = (date: Date) => date.toLocaleDateString('en', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const categoryName = (slug?: string) => categories.find((c) => c.slug === slug)?.name;
-const excerpt = (text = '') => (text.length > 140 ? `${text.slice(0, 140).replace(/\s+\S*$/, '')} …` : text);
+const excerpt = (text = '') => (text.length > 160 ? `${text.slice(0, 160).replace(/\s+\S*$/, '')} …` : text);
 ---
 
 <div class="years">
@@ -28,23 +28,28 @@ const excerpt = (text = '') => (text.length > 140 ? `${text.slice(0, 140).replac
 				<h2>
 					{year} <span>{list.length === 1 ? '1 post' : `${list.length} posts`}</span>
 				</h2>
-				<ul class="tiles">
+				<ul class="cards">
 					{list.map((post) => (
 						<li>
-							<a href={`/${post.id}/`} class="tile">
-								<span class="visual">
-									{post.data.cover ? (
-										<Image src={post.data.cover} alt="" width={480} />
-									) : (
-										<span class="quote">“{excerpt(post.data.description)}”</span>
-									)}
-								</span>
-								<span class="title" lang={post.data.lang}>
-									{post.data.title}
-								</span>
-								<span class="meta">
-									{day(post.data.date)}
-									{categoryName(post.data.categories[0]) && ` · ${categoryName(post.data.categories[0])}`}
+							<a href={`/${post.id}/`} class="card">
+								{post.data.cover ? (
+									<Image
+										src={post.data.cover}
+										alt=""
+										width={640}
+										class:list={['visual', { fit: post.data.coverFit }]}
+									/>
+								) : (
+									<span class="visual quote">“{excerpt(post.data.description)}”</span>
+								)}
+								<span class="body">
+									<span class="meta">
+										{day(post.data.date)}
+										{categoryName(post.data.categories[0]) && ` · ${categoryName(post.data.categories[0])}`}
+									</span>
+									<span class="title" lang={post.data.lang}>
+										{post.data.title}
+									</span>
 								</span>
 							</a>
 						</li>
@@ -74,88 +79,74 @@ const excerpt = (text = '') => (text.length > 140 ? `${text.slice(0, 140).replac
 		font-size: 22px;
 		color: var(--ink-soft);
 	}
-	.tiles {
+	.cards {
 		margin: 0;
 		padding: 0;
 		list-style: none;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-		gap: 36px 28px;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 28px;
 	}
-	.tile {
+	.card {
+		height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 2px;
-		text-decoration: none;
-	}
-	.tile:hover {
-		background: none;
-	}
-	/* Fixed-height area so titles line up; the image keeps its own shape inside it. */
-	.visual {
-		height: 200px;
-		margin-bottom: 10px;
-		display: flex;
-		align-items: flex-end;
-		justify-content: flex-start;
-	}
-	.visual :global(img),
-	.quote {
-		display: block;
-		max-width: 100%;
-		max-height: 100%;
-		width: auto;
-		height: auto;
-		border: 2px solid var(--ink);
+		border: 3px solid var(--ink);
+		background: rgba(255, 255, 255, 0.55);
 		box-shadow: var(--shadow-light);
+		text-decoration: none;
 		transition:
 			transform 120ms steps(2),
 			box-shadow 120ms steps(2);
 	}
-	.quote {
-		box-sizing: border-box;
+	.card:hover {
+		background: rgba(255, 255, 255, 0.75);
+		transform: translate(-3px, -3px);
+		box-shadow: 7px 7px 0 0 var(--ink);
+	}
+	.visual {
+		display: block;
 		width: 100%;
-		padding: 14px 16px;
-		background: rgba(255, 255, 255, 0.5);
-		font-size: 20px;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-bottom: 3px solid var(--ink);
+	}
+	/* coverFit: true in a post's front matter */
+	.visual.fit {
+		object-fit: contain;
+		background: transparent;
+	}
+	.quote {
+		display: flex;
+		align-items: center;
+		padding: 20px 22px;
+		background: rgba(237, 194, 232, 0.35);
+		font-size: 22px;
 		line-height: 1.2;
 		overflow: hidden;
 	}
-	.tile:hover .visual :global(img),
-	.tile:hover .quote {
-		transform: translate(-2px, -2px);
-		box-shadow: var(--shadow);
-	}
-	.title {
-		line-height: 1.1;
-	}
-	.tile:hover .title {
-		text-decoration: underline;
-		text-decoration-thickness: 2px;
-		text-underline-offset: 4px;
+	.body {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		padding: 12px 16px 16px;
 	}
 	.meta {
 		font-size: 19px;
 		color: var(--ink-soft);
 	}
-	/* Phones: two columns with smaller images. */
+	.title {
+		line-height: 1.1;
+	}
+	.card:hover .title {
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
+	}
 	@media (max-width: 520px) {
-		.tiles {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 28px 18px;
-		}
-		.visual {
-			height: 140px;
-		}
-		.title {
-			font-size: 21px;
-		}
-		.meta {
-			font-size: 17px;
-		}
-		.quote {
-			padding: 8px 10px;
-			font-size: 17px;
+		.cards {
+			grid-template-columns: minmax(0, 1fr);
 		}
 	}
 </style>

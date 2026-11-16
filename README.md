@@ -30,6 +30,7 @@ date: 2026-11-16
 categories: [stickers]
 description: Short summary for the list and meta description
 cover: ./cover.png
+coverFit: false  # true: show the whole cover in archive cards instead of cropping it
 lang: en
 ---
 ```

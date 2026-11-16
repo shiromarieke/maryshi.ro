@@ -17,6 +17,8 @@ const posts = defineCollection({
 			description: z.string().optional(),
 			cover: image().optional(),
 			coverAlt: z.string().optional(),
+			/** Archive cards crop the cover to fill ("scale to cover"); true shows it whole ("scale to fit"). */
+			coverFit: z.boolean().default(false),
 			lang: z.string().optional(),
 			wordpressId: z.number().optional(),
 		}),
