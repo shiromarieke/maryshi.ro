@@ -1,0 +1,14 @@
+{
+	// Type-checks the Node scripts (npm run typecheck). Node runs them directly by stripping
+	// the types, so only "erasable" TypeScript is allowed: no enums, namespaces or
+	// constructor parameter properties.
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"erasableSyntaxOnly": true,
+		"allowImportingTsExtensions": true,
+		"types": ["node"]
+	},
+	"include": ["./**/*.ts", "../src/site.ts"],
+	"exclude": []
+}

@@ -10,7 +10,7 @@
 // Existing index.md files are left alone unless --force is given, so edits made after
 // the import are not overwritten by accident.
 //
-// Usage: node scripts/import-wordpress.mjs [--force]
+// Usage: node scripts/import-wordpress.ts [--force]
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -18,6 +18,68 @@ import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
 import YAML from 'yaml';
 import * as he from 'he';
+
+// ---------------------------------------------------------------- WordPress REST API types
+
+interface Rendered {
+	rendered: string;
+}
+
+/** A post or page, with only the fields this script uses. */
+interface WpEntry {
+	id: number;
+	slug: string;
+	link: string;
+	date_gmt: string;
+	modified_gmt: string;
+	title: Rendered;
+	content: Rendered;
+	excerpt?: Rendered;
+	categories?: number[];
+	featured_media?: number;
+}
+
+interface WpCategory {
+	id: number;
+	slug: string;
+	name: string;
+	description: string;
+}
+
+interface WpMedia {
+	id: number;
+	source_url: string;
+	alt_text: string;
+	media_details?: { sizes?: Record<string, { source_url: string }> };
+}
+
+type Kind = 'posts' | 'pages';
+
+interface Frontmatter {
+	slug: string;
+	title: string;
+	date?: string;
+	categories?: string[];
+	description?: string;
+	cover?: string;
+	coverAlt?: string;
+	updated?: string;
+	wordpressId?: number;
+}
+
+/** Callbacks the HTML → Markdown converter uses to localise images and links. */
+interface ConverterContext {
+	localImage(url: string): string | null;
+	rewriteHref(href: string): string;
+}
+
+interface ImportContext {
+	originalOf: Map<string, string>;
+	categorySlugs: Map<number, string>;
+	mediaById: Map<number, WpMedia>;
+}
+
+// ---------------------------------------------------------------- settings
 
 const SITE = 'https://maryshi.ro';
 const API = `${SITE}/wp-json/wp/v2`;
@@ -32,24 +94,24 @@ const IMAGE_EXT_RE = /\.(png|jpe?g|gif|webp|avif|svg)$/i;
 const SIZE_SUFFIX_RE = /-\d+x\d+(\.\w+)$/;
 
 const force = process.argv.includes('--force');
-const warnings = [];
-const warn = (where, message) => warnings.push(`${where}: ${message}`);
+const warnings: string[] = [];
+const warn = (where: string, message: string) => warnings.push(`${where}: ${message}`);
 
 // ---------------------------------------------------------------- fetching
 
-async function fetchAll(type) {
-	const items = [];
+async function fetchAll<T>(type: string): Promise<T[]> {
+	const items: T[] = [];
 	for (let page = 1; ; page++) {
 		const url = `${API}/${type}?per_page=100&page=${page}`;
 		const res = await fetch(url);
 		if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
-		items.push(...(await res.json()));
+		items.push(...((await res.json()) as T[]));
 		const totalPages = Number(res.headers.get('x-wp-totalpages') ?? 1);
 		if (page >= totalPages) return items;
 	}
 }
 
-async function downloadFirst(urls, dest) {
+async function downloadFirst(urls: string[], dest: string): Promise<boolean> {
 	try {
 		await fs.access(dest);
 		return true; // already downloaded in an earlier run
@@ -67,16 +129,16 @@ async function downloadFirst(urls, dest) {
 // ---------------------------------------------------------------- uploads
 
 /** "https://maryshi.ro/wp-content/uploads/2022/02/a%20b.png" -> "2022/02/a b.png" */
-function uploadPath(url) {
+function uploadPath(url: string | null | undefined): string | null {
 	const match = UPLOAD_RE.exec(url ?? '');
 	return match ? decodeURIComponent(match[1]) : null;
 }
 
-const uploadUrl = (rel) => `${SITE}/wp-content/uploads/${encodeURI(rel)}`;
+const uploadUrl = (rel: string) => `${SITE}/wp-content/uploads/${encodeURI(rel)}`;
 
 /** Maps every resized variant ("x-1024x728.png") to its original upload ("x.png"). */
-function buildOriginalMap(media) {
-	const map = new Map();
+function buildOriginalMap(media: WpMedia[]): Map<string, string> {
+	const map = new Map<string, string>();
 	for (const item of media) {
 		const original = uploadPath(item.source_url);
 		if (!original) continue;
@@ -91,9 +153,13 @@ function buildOriginalMap(media) {
 
 // ---------------------------------------------------------------- html -> markdown
 
-const plainText = (html) => he.decode((html ?? '').replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
+const plainText = (html: string | undefined) =>
+	he
+		.decode((html ?? '').replace(/<[^>]*>/g, ''))
+		.replace(/\s+/g, ' ')
+		.trim();
 
-function createConverter(ctx) {
+function createConverter(ctx: ConverterContext): TurndownService {
 	const td = new TurndownService({
 		headingStyle: 'atx',
 		codeBlockStyle: 'fenced',
@@ -106,10 +172,11 @@ function createConverter(ctx) {
 
 	// Rules added later take precedence over earlier ones and over the defaults.
 	td.addRule('link', {
-		filter: (node) => node.nodeName === 'A' && node.getAttribute('href'),
+		filter: (node) => node.nodeName === 'A' && !!node.getAttribute('href'),
 		replacement: (content, node) => {
-			const href = ctx.rewriteHref(node.getAttribute('href'));
-			const title = node.getAttribute('title');
+			const el = node as HTMLElement;
+			const href = ctx.rewriteHref(el.getAttribute('href') ?? '');
+			const title = el.getAttribute('title');
 			return `[${content}](${href}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`;
 		},
 	});
@@ -120,14 +187,15 @@ function createConverter(ctx) {
 			IMAGE_EXT_RE.test(uploadPath(node.getAttribute('href')) ?? '') &&
 			node.children.length === 1 &&
 			node.children[0].nodeName === 'IMG' &&
-			node.textContent.trim() === '',
+			(node.textContent ?? '').trim() === '',
 		replacement: (content) => content,
 	});
 	td.addRule('image', {
 		filter: 'img',
 		replacement: (_content, node) => {
-			const src = node.getAttribute('src') ?? '';
-			const alt = (node.getAttribute('alt') ?? '').replace(/[[\]]/g, '');
+			const el = node as HTMLElement;
+			const src = el.getAttribute('src') ?? '';
+			const alt = (el.getAttribute('alt') ?? '').replace(/[[\]]/g, '');
 			return `![${alt}](${ctx.localImage(src) ?? src})`;
 		},
 	});
@@ -140,7 +208,7 @@ function createConverter(ctx) {
 
 // ---------------------------------------------------------------- entries
 
-async function importEntry(kind, item, { originalOf, categorySlugs, mediaById }) {
+async function importEntry(kind: Kind, item: WpEntry, { originalOf, categorySlugs, mediaById }: ImportContext) {
 	const slug = item.slug;
 	const where = `${kind}/${slug}`;
 	const dir = path.join(CONTENT_DIR, kind, slug);
@@ -156,10 +224,10 @@ async function importEntry(kind, item, { originalOf, categorySlugs, mediaById })
 
 	if (item.link !== `${SITE}/${slug}/`) warn(where, `WordPress URL is ${item.link}, not /${slug}/`);
 
-	const images = new Map(); // original upload path -> { name, candidates }
-	const files = new Set(); // upload paths copied to public/
+	const images = new Map<string, { name: string; candidates: string[] }>(); // keyed by original upload path
+	const files = new Set<string>(); // upload paths copied to public/
 
-	const ctx = {
+	const ctx: ConverterContext = {
 		localImage(url) {
 			const rel = uploadPath(url);
 			if (!rel) {
@@ -167,13 +235,15 @@ async function importEntry(kind, item, { originalOf, categorySlugs, mediaById })
 				return null;
 			}
 			const original = originalOf.get(rel) ?? rel.replace(SIZE_SUFFIX_RE, '$1');
-			if (!images.has(original)) {
+			let image = images.get(original);
+			if (!image) {
 				let name = path.basename(original).replace(/[^\w.-]+/g, '-');
 				const taken = new Set([...images.values()].map((i) => i.name));
 				for (let n = 2; taken.has(name); n++) name = name.replace(/(-\d+)?(\.\w+)$/, `-${n}$2`);
-				images.set(original, { name, candidates: [...new Set([original, rel])].map(uploadUrl) });
+				image = { name, candidates: [...new Set([original, rel])].map(uploadUrl) };
+				images.set(original, image);
 			}
-			return `./${images.get(original).name}`;
+			return `./${image.name}`;
 		},
 		rewriteHref(href) {
 			const rel = uploadPath(href);
@@ -196,15 +266,17 @@ async function importEntry(kind, item, { originalOf, categorySlugs, mediaById })
 	if (/wp-block-gallery|class="gallery/i.test(html)) warn(where, 'contains a gallery, check the layout');
 	let markdown = createConverter(ctx).turndown(html).trim();
 
-	const frontmatter = { slug, title: plainText(item.title.rendered) };
+	const frontmatter: Frontmatter = { slug, title: plainText(item.title.rendered) };
 	if (kind === 'posts') {
 		frontmatter.date = `${item.date_gmt}Z`;
-		frontmatter.categories = item.categories.map((id) => categorySlugs.get(id)).filter(Boolean);
+		frontmatter.categories = (item.categories ?? [])
+			.map((id) => categorySlugs.get(id))
+			.filter((s): s is string => !!s);
 		const description = plainText(item.excerpt?.rendered).replace(/\s*(\[…\]|…|Continue reading.*)$/, '');
 		if (description) frontmatter.description = description;
-		const cover = mediaById.get(item.featured_media);
+		const cover = item.featured_media ? mediaById.get(item.featured_media) : undefined;
 		if (cover) {
-			frontmatter.cover = ctx.localImage(cover.source_url);
+			frontmatter.cover = ctx.localImage(cover.source_url) ?? undefined;
 			const alt = plainText(cover.alt_text);
 			if (alt) frontmatter.coverAlt = alt;
 		}
@@ -236,12 +308,15 @@ async function importEntry(kind, item, { originalOf, categorySlugs, mediaById })
 // ---------------------------------------------------------------- main
 
 console.log(`Fetching from ${API} ...`);
-const [posts, pages, categories, media] = await Promise.all(
-	['posts', 'pages', 'categories', 'media'].map(fetchAll),
-);
+const [posts, pages, categories, media] = await Promise.all([
+	fetchAll<WpEntry>('posts'),
+	fetchAll<WpEntry>('pages'),
+	fetchAll<WpCategory>('categories'),
+	fetchAll<WpMedia>('media'),
+]);
 console.log(`${posts.length} posts, ${pages.length} pages, ${categories.length} categories, ${media.length} media\n`);
 
-const context = {
+const context: ImportContext = {
 	originalOf: buildOriginalMap(media),
 	categorySlugs: new Map(categories.map((c) => [c.id, c.slug])),
 	mediaById: new Map(media.map((m) => [m.id, m])),

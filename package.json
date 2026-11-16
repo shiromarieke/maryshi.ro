@@ -10,18 +10,23 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "import": "node scripts/import-wordpress.mjs",
-    "favicons": "node scripts/make-favicons.mjs",
-    "og-image": "node scripts/make-og-image.mjs"
+    "import": "node scripts/import-wordpress.ts",
+    "favicons": "node scripts/make-favicons.ts",
+    "og-image": "node scripts/make-og-image.ts",
+    "typecheck": "tsc -p scripts"
   },
   "dependencies": {
     "@fontsource/vt323": "^5.3.0",
     "astro": "^7.4.12"
   },
   "devDependencies": {
+    "@types/he": "^1.2.3",
+    "@types/node": "^26.6.6",
+    "@types/turndown": "^5.0.6",
     "he": "^2.0.0",
     "turndown": "^7.2.5",
     "turndown-plugin-gfm": "^1.0.2",
+    "typescript": "^7.0.2",
     "yaml": "^2.9.1"
   }
 }

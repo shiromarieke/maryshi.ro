@@ -5,7 +5,7 @@
 // Uses a local Chrome to render HTML, so the result matches the site exactly. Set CHROME to
 // the browser binary if it isn't at the default macOS location.
 //
-// Usage: node scripts/make-og-image.mjs
+// Usage: node scripts/make-og-image.ts
 
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
@@ -21,7 +21,7 @@ const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/M
 // Embed font and photo as data URIs, so Chrome needs no file access.
 const font = await fs.readFile(path.join(ROOT, 'node_modules/@fontsource/vt323/files/vt323-latin-400-normal.woff2'));
 const photo = await sharp(path.join(ROOT, 'src/assets/profile.jpg')).resize({ width: 900 }).jpeg({ quality: 85 }).toBuffer();
-const dataUri = (mime, buf) => `data:${mime};base64,${buf.toString('base64')}`;
+const dataUri = (mime: string, buf: Buffer) => `data:${mime};base64,${buf.toString('base64')}`;
 
 const html = `<!doctype html>
 <meta charset="utf-8">

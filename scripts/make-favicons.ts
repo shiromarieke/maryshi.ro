@@ -6,7 +6,7 @@
 //   public/apple-touch-icon.png 180×180, full-bleed gradient (iOS rounds the corners itself
 //                               and would turn transparent corners black), M at 9× on a 20×20 grid
 //
-// Usage: node scripts/make-favicons.mjs
+// Usage: node scripts/make-favicons.ts
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -22,7 +22,7 @@ const GRADIENT = `<linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
 	</linearGradient>`;
 
 // The letter, 10×10 pixels with its top-left corner at (x, y).
-const letter = (x, y) =>
+const letter = (x: number, y: number) =>
 	`<path fill="${INK}" transform="translate(${x - 3} ${y - 3})" d="M3 3h2v10h-2zM11 3h2v10h-2zM5 4h1v1h-1zM10 4h1v1h-1zM5 5h2v1h-2zM9 5h2v1h-2zM6 6h4v1h-4zM7 7h2v1h-2z"/>`;
 
 const faviconSvg = (size = 16) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 16 16" shape-rendering="crispEdges">
@@ -40,10 +40,15 @@ const appleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="18
 </svg>
 `;
 
-const png = (svg) => sharp(Buffer.from(svg)).png().toBuffer();
+const png = (svg: string): Promise<Buffer> => sharp(Buffer.from(svg)).png().toBuffer();
+
+interface IcoImage {
+	size: number;
+	data: Buffer;
+}
 
 /** ICO container holding PNG images (supported by all current browsers and Windows). */
-function ico(images) {
+function ico(images: IcoImage[]): Buffer {
 	const header = Buffer.alloc(6 + 16 * images.length);
 	header.writeUInt16LE(0, 0); // reserved
 	header.writeUInt16LE(1, 2); // type: icon
@@ -65,7 +70,9 @@ function ico(images) {
 }
 
 await fs.writeFile(path.join(PUBLIC, 'favicon.svg'), faviconSvg());
-const icoImages = await Promise.all([16, 32].map(async (size) => ({ size, data: await png(faviconSvg(size)) })));
+const icoImages = await Promise.all(
+	[16, 32].map(async (size): Promise<IcoImage> => ({ size, data: await png(faviconSvg(size)) })),
+);
 await fs.writeFile(path.join(PUBLIC, 'favicon.ico'), ico(icoImages));
 await fs.writeFile(path.join(PUBLIC, 'apple-touch-icon.png'), await png(appleSvg));
 
