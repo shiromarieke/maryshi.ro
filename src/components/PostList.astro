@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	posts: CollectionEntry<'posts'>[];
+}
+
+const posts = [...Astro.props.posts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<ul class="post-list">
+	{
+		posts.map((post) => (
+			<li>
+				{post.data.cover && (
+					<a href={`/${post.id}/`}>
+						<Image src={post.data.cover} alt={post.data.coverAlt ?? ''} width={240} />
+					</a>
+				)}
+				<div>
+					<time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().slice(0, 10)}</time>
+					<h2>
+						<a href={`/${post.id}/`}>{post.data.title}</a>
+					</h2>
+					{post.data.description && <p>{post.data.description}</p>}
+				</div>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.post-list {
+		list-style: none;
+		padding: 0;
+	}
+	li {
+		display: flex;
+		gap: 1rem;
+		margin: 1.5rem 0;
+	}
+	li img {
+		width: 8rem;
+		height: auto;
+		flex-shrink: 0;
+	}
+	h2 {
+		margin: 0.1rem 0;
+		font-size: 1.2rem;
+	}
+	time {
+		color: #666;
+		font-size: 0.875rem;
+	}
+	p {
+		margin: 0.25rem 0;
+	}
+</style>

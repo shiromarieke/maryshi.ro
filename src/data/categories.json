@@ -1,0 +1,67 @@
+[
+	{
+		"slug": "articles",
+		"name": "Articles",
+		"description": ""
+	},
+	{
+		"slug": "campaign",
+		"name": "Campaign",
+		"description": ""
+	},
+	{
+		"slug": "cryptoparty",
+		"name": "CryptoParty",
+		"description": ""
+	},
+	{
+		"slug": "culture",
+		"name": "Culture",
+		"description": ""
+	},
+	{
+		"slug": "events",
+		"name": "Events",
+		"description": ""
+	},
+	{
+		"slug": "infosec",
+		"name": "Infosec",
+		"description": ""
+	},
+	{
+		"slug": "journalism",
+		"name": "Journalism",
+		"description": ""
+	},
+	{
+		"slug": "nextcloud",
+		"name": "Nextcloud",
+		"description": ""
+	},
+	{
+		"slug": "privacy",
+		"name": "Privacy",
+		"description": ""
+	},
+	{
+		"slug": "stickers",
+		"name": "Stickers",
+		"description": ""
+	},
+	{
+		"slug": "talks",
+		"name": "Talks",
+		"description": ""
+	},
+	{
+		"slug": "training",
+		"name": "Training",
+		"description": ""
+	},
+	{
+		"slug": "uncategorized",
+		"name": "Uncategorized",
+		"description": ""
+	}
+]
