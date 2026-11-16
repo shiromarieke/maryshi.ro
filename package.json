@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "import": "node scripts/import-wordpress.mjs"
+    "import": "node scripts/import-wordpress.mjs",
+    "favicons": "node scripts/make-favicons.mjs"
   },
   "dependencies": {
     "@fontsource/vt323": "^5.3.0",
