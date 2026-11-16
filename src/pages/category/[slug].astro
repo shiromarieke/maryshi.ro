@@ -17,8 +17,26 @@ export async function getStaticPaths() {
 const { category, posts } = Astro.props;
 ---
 
-<Base title={category.name} description={category.description || undefined}>
+<Base title={category.name} description={category.description || `Posts in ${category.name}`}>
+	<p class="crumb"><a href="/archive/">Archive</a> /</p>
 	<h1>{category.name}</h1>
-	{category.description && <p>{category.description}</p>}
+	{category.description && <p class="description">{category.description}</p>}
 	<PostList posts={posts} />
 </Base>
+
+<style>
+	.crumb {
+		margin: 0 0 4px;
+		font-size: 22px;
+		color: var(--ink-soft);
+	}
+	h1 {
+		margin: 0 0 32px;
+		font-size: 48px;
+		font-weight: 400;
+		line-height: 1;
+	}
+	.description {
+		margin: -16px 0 32px;
+	}
+</style>

@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import profile from '../assets/profile.jpg';
+
+interface Props {
+	/** Diameter in CSS pixels. */
+	size?: number;
+}
+
+const { size = 150 } = Astro.props;
+---
+
+<Image
+	src={profile}
+	alt="Marie Gutbub speaking into a microphone on stage"
+	width={size * 3}
+	class="vignette"
+	style={`--size: ${size}px`}
+	loading="eager"
+/>

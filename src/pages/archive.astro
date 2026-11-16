@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import categories from '../data/categories.json';
+
+const posts = await getCollection('posts');
+const used = categories
+	.map((c) => ({ ...c, count: posts.filter((p) => p.data.categories.includes(c.slug)).length }))
+	.filter((c) => c.count > 0);
+---
+
+<Base title="Archive" description="All posts by Marie Gutbub, newest first.">
+	<h1>Archive</h1>
+	<nav aria-label="Categories" class="categories">
+		<ul class="link-row">
+			{
+				used.map((c) => (
+					<li>
+						<a href={`/category/${c.slug}/`}>{c.name}</a> <span>{c.count}</span>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+	<PostList posts={posts} />
+</Base>
+
+<style>
+	h1 {
+		margin: 0 0 16px;
+		font-size: 48px;
+		font-weight: 400;
+		line-height: 1;
+	}
+	.categories {
+		margin-bottom: 40px;
+		font-size: 22px;
+	}
+	.categories span {
+		color: var(--ink-soft);
+	}
+</style>

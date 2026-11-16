@@ -1,0 +1,164 @@
+@import '@fontsource/vt323';
+
+:root {
+	--ink: #383e42; /* anthracite, RAL 7016 */
+	--ink-strong: #23272a;
+	--ink-soft: #5b6166;
+	--font: 'VT323', ui-monospace, monospace;
+	--shadow: 0 10px 28px rgba(56, 62, 66, 0.3), 0 3px 8px rgba(56, 62, 66, 0.2);
+	--shadow-light: 0 6px 16px rgba(56, 62, 66, 0.2), 0 2px 5px rgba(56, 62, 66, 0.14);
+	--measure: 44rem;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	background: #fbf3dc;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	color: var(--ink);
+	font-family: var(--font);
+	font-size: 24px;
+	line-height: 1.3;
+	-webkit-font-smoothing: none;
+}
+
+/* Pastel background, fixed to the viewport so long pages keep the same colours. */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	background-color: #fbf3dc;
+	background-image:
+		radial-gradient(55% 40% at 100% 0%, #edc2e8 0%, rgba(237, 194, 232, 0) 100%),
+		radial-gradient(50% 35% at 100% 85%, #cfd8fa 0%, rgba(207, 216, 250, 0) 100%),
+		radial-gradient(45% 32% at 0% 66%, #c4f6dd 0%, rgba(196, 246, 221, 0) 100%),
+		linear-gradient(180deg, #fdc7b6 0%, #fcdccb 22%, #fbf3d3 44%, #ecf8dc 60%, #d5f6ea 78%, #c3f4f8 100%);
+}
+
+a {
+	color: var(--ink);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 4px;
+}
+a:hover {
+	color: var(--ink-strong);
+	background: rgba(255, 255, 255, 0.6);
+}
+a:focus-visible {
+	outline: 3px solid var(--ink);
+	outline-offset: 2px;
+}
+
+.vignette {
+	display: block;
+	flex: 0 0 auto;
+	width: var(--size, 150px);
+	height: var(--size, 150px);
+	border: 3px solid var(--ink);
+	border-radius: 50%;
+	box-shadow: var(--shadow);
+	object-fit: cover;
+	object-position: 48% 28%;
+}
+
+.link-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 22px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* ---------------------------------------------------------------- long-form content */
+
+.prose {
+	overflow-wrap: break-word;
+}
+.prose > :first-child {
+	margin-top: 0;
+}
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+	font-weight: 400;
+	line-height: 1.05;
+	margin: 1.6em 0 0.4em;
+}
+.prose h2 {
+	font-size: 36px;
+}
+.prose h3 {
+	font-size: 30px;
+}
+.prose h4 {
+	font-size: 26px;
+}
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose table,
+.prose figure {
+	margin: 0 0 0.8em;
+}
+.prose img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 1em 0;
+}
+.prose iframe,
+.prose video {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	margin: 1em 0;
+	border: 3px solid var(--ink);
+	box-shadow: var(--shadow-light);
+}
+.prose blockquote {
+	padding-left: 1em;
+	border-left: 3px solid var(--ink);
+}
+.prose code,
+.prose pre {
+	font-family: var(--font);
+	background: rgba(255, 255, 255, 0.55);
+}
+.prose code {
+	padding: 0 0.2em;
+}
+.prose pre {
+	padding: 0.6em 0.8em;
+	overflow-x: auto;
+}
+.prose hr {
+	border: 0;
+	border-top: 3px dotted var(--ink);
+	margin: 1.6em 0;
+}
+.prose table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	border-collapse: collapse;
+}
+.prose td,
+.prose th {
+	padding: 0.4em 0.6em;
+	border: 2px solid var(--ink);
+	vertical-align: top;
+	text-align: left;
+}

@@ -39,3 +39,11 @@ lang: en
 The build makes every URL relative (`integrations/relative-links.mjs`), so the same `dist/` works at
 https://maryshi.ro/ and at https://shiromarieke.github.io/maryshi.ro/. Write links as `/about/` in
 Markdown and components as usual; they are rewritten after the build.
+
+## Design
+
+- Front page text: `src/pages/index.astro`
+- Navigation and social links: `src/site.ts`
+- Profile picture: `src/assets/profile.jpg`
+- Colours, gradient, font (VT323, self-hosted via `@fontsource/vt323`) and article styles: `src/styles/global.css`
+- Layout of all other pages (header with vignette and nav, footer with social links): `src/layouts/Base.astro`

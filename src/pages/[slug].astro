@@ -15,33 +15,60 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const isPost = entry.collection === 'posts';
+const post = entry.collection === 'posts' ? entry : undefined;
 const categoryName = (slug: string) => categories.find((c) => c.slug === slug)?.name ?? slug;
 ---
 
-<Base title={entry.data.title} description={isPost ? entry.data.description : undefined} lang={entry.data.lang}>
+<Base title={entry.data.title} description={post?.data.description} lang={entry.data.lang}>
 	<article>
-		<h1>{entry.data.title}</h1>
+		<header>
+			<h1>{entry.data.title}</h1>
+			{
+				post && (
+					<p class="meta">
+						<time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().slice(0, 10)}</time>
+						{post.data.categories.map((slug) => (
+							<>
+								{' · '}
+								<a href={`/category/${slug}/`}>{categoryName(slug)}</a>
+							</>
+						))}
+					</p>
+				)
+			}
+		</header>
+		<div class="prose">
+			<Content />
+		</div>
 		{
-			isPost && (
-				<p class="meta">
-					<time datetime={entry.data.date.toISOString()}>{entry.data.date.toISOString().slice(0, 10)}</time>
-					{entry.data.categories.map((slug) => (
-						<>
-							{' · '}
-							<a href={`/category/${slug}/`}>{categoryName(slug)}</a>
-						</>
-					))}
+			post && (
+				<p class="back">
+					<a href="/archive/">← All posts</a>
 				</p>
 			)
 		}
-		<Content />
 	</article>
 </Base>
 
 <style>
+	header {
+		margin-bottom: 32px;
+	}
+	h1 {
+		margin: 0;
+		font-size: 48px;
+		font-weight: 400;
+		line-height: 1;
+	}
 	.meta {
-		color: #666;
-		font-size: 0.875rem;
+		margin: 10px 0 0;
+		font-size: 22px;
+		color: var(--ink-soft);
+	}
+	.meta a {
+		color: var(--ink-soft);
+	}
+	.back {
+		margin-top: 48px;
 	}
 </style>
