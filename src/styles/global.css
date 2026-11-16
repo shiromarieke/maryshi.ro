@@ -63,7 +63,7 @@ a:focus-visible {
 	flex: 0 0 auto;
 	width: var(--size, 150px);
 	height: var(--size, 150px);
-	border: 3px solid var(--ink);
+	border: 2px solid var(--ink);
 	border-radius: 50%;
 	box-shadow: var(--shadow);
 	object-fit: cover;
