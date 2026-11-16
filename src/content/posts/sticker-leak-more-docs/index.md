@@ -6,6 +6,7 @@ categories:
   - stickers
 description: Pint your own! Files here
 cover: ./leak_more_docs.pdf.png
+coverFit: true
 updated: 2022-02-27T20:26:56Z
 wordpressId: 49
 ---

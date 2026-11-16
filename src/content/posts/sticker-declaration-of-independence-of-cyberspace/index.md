@@ -6,6 +6,7 @@ categories:
   - stickers
 description: Pint your own! Files here
 cover: ./cyber.png
+coverFit: true
 updated: 2022-02-27T20:24:38Z
 wordpressId: 237
 ---

@@ -8,6 +8,7 @@ categories:
   - stickers
 description: Pint your own! Files here
 cover: ./index-1.png
+coverFit: true
 updated: 2022-02-27T20:26:35Z
 wordpressId: 88
 ---

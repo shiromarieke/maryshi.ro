@@ -7,6 +7,7 @@ categories:
   - stickers
 description: Pint your own! Files here
 cover: ./fuck_cloudflare_1gen.png
+coverFit: true
 updated: 2022-02-27T20:26:27Z
 wordpressId: 92
 ---

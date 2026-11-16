@@ -9,6 +9,7 @@ categories:
   - stickers
 description: Pint your own! Files here
 cover: ./g123.png
+coverFit: true
 updated: 2022-02-27T20:26:50Z
 wordpressId: 55
 ---
