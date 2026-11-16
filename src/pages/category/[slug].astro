@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 const { category, posts } = Astro.props;
 ---
 
-<Base title={category.name} description={category.description || `Posts in ${category.name}`}>
+<Base title={category.name} description={category.description || `Posts in ${category.name}`} wide>
 	<p class="crumb"><a href="/archive/">Archive</a> /</p>
 	<h1>{category.name}</h1>
 	{category.description && <p class="description">{category.description}</p>}

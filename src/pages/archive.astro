@@ -8,10 +8,24 @@ const posts = await getCollection('posts');
 const used = categories
 	.map((c) => ({ ...c, count: posts.filter((p) => p.data.categories.includes(c.slug)).length }))
 	.filter((c) => c.count > 0);
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))].sort((a, b) => b - a);
 ---
 
-<Base title="Archive" description="All posts by Marie Gutbub, newest first.">
-	<h1>Archive</h1>
+<Base title="Archive" description="All posts by Marie Gutbub, newest first." wide>
+	<div class="head">
+		<h1>Archive</h1>
+		<nav aria-label="Years">
+			<ul class="link-row years">
+				{
+					years.map((year) => (
+						<li>
+							<a href={`#y${year}`}>{year}</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
 	<nav aria-label="Categories" class="categories">
 		<ul class="link-row">
 			{
@@ -27,15 +41,30 @@ const used = categories
 </Base>
 
 <style>
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 12px 32px;
+		margin-bottom: 8px;
+	}
 	h1 {
-		margin: 0 0 16px;
+		margin: 0;
 		font-size: 48px;
 		font-weight: 400;
 		line-height: 1;
 	}
-	.categories {
-		margin-bottom: 40px;
+	.years {
+		gap: 4px 16px;
 		font-size: 22px;
+	}
+	.categories {
+		margin-bottom: 48px;
+		font-size: 21px;
+	}
+	.categories .link-row {
+		gap: 4px 18px;
 	}
 	.categories span {
 		color: var(--ink-soft);

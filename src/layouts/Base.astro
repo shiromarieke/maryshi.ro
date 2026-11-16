@@ -9,9 +9,11 @@ interface Props {
 	lang?: string;
 	/** Front page: no header and footer, the page brings its own links. */
 	bare?: boolean;
+	/** Wider content column, for tile grids. */
+	wide?: boolean;
 }
 
-const { title, description = site.description, lang = 'en', bare = false } = Astro.props;
+const { title, description = site.description, lang = 'en', bare = false, wide = false } = Astro.props;
 const path = Astro.url.pathname;
 const current = path.startsWith('/category/') ? '/archive/' : path;
 ---
@@ -30,7 +32,7 @@ const current = path.startsWith('/category/') ? '/archive/' : path;
 			bare ? (
 				<slot />
 			) : (
-				<div class="page">
+				<div class:list={['page', { wide }]}>
 					<header class="site-header">
 						<a href="/" class="home" aria-label={`${site.name}, home`}>
 							<Vignette size={64} />
@@ -72,6 +74,9 @@ const current = path.startsWith('/category/') ? '/archive/' : path;
 		max-width: var(--measure);
 		margin: 0 auto;
 		padding: 40px 24px 48px;
+	}
+	.page.wide {
+		max-width: 1120px;
 	}
 	.site-header {
 		display: flex;
