@@ -43,12 +43,17 @@ import { nav, social } from '../site';
 </Base>
 
 <style>
+	/* On narrow screens the picture sits above the text, so both start at the top. */
 	.front {
 		min-height: 100vh;
 		padding: 48px 24px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+		@media (max-width: 680px) {
+			align-items: flex-start;
+		}
 	}
 	main {
 		width: 100%;
@@ -58,9 +63,13 @@ import { nav, social } from '../site';
 		align-items: flex-start;
 		justify-content: center;
 		gap: 40px;
-	}
-	main :global(.vignette) {
-		margin-top: 4px;
+
+		:global(.vignette) {
+			margin-top: 4px;
+		}
+		@media (max-width: 680px) {
+			justify-content: flex-start;
+		}
 	}
 	.intro {
 		flex: 1 1 360px;
@@ -68,11 +77,12 @@ import { nav, social } from '../site';
 		display: flex;
 		flex-direction: column;
 		gap: 18px;
-	}
-	.intro p {
-		margin: 0;
-		font-size: 26px;
-		line-height: 1.25;
+
+		p {
+			margin: 0;
+			font-size: 26px;
+			line-height: 1.25;
+		}
 	}
 	.pages {
 		font-size: 26px;
@@ -80,14 +90,5 @@ import { nav, social } from '../site';
 	}
 	.elsewhere {
 		font-size: 22px;
-	}
-	/* On narrow screens the picture sits above the text, so both should start at the top. */
-	@media (max-width: 680px) {
-		.front {
-			align-items: flex-start;
-		}
-		main {
-			justify-content: flex-start;
-		}
 	}
 </style>

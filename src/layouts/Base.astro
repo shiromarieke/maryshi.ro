@@ -74,25 +74,32 @@ const current = path.startsWith('/category/') ? '/archive/' : path;
 		max-width: var(--measure);
 		margin: 0 auto;
 		padding: 40px 24px 48px;
-	}
-	.page.wide {
-		max-width: 1120px;
+
+		&.wide {
+			max-width: 1120px;
+		}
 	}
 	.site-header {
 		display: flex;
 		align-items: center;
 		gap: 24px;
 		margin-bottom: 48px;
+
+		nav {
+			font-size: 26px;
+		}
+		@media (max-width: 520px) {
+			align-items: flex-start;
+			gap: 16px;
+		}
 	}
 	.home {
 		flex: 0 0 auto;
 		border-radius: 50%;
-	}
-	.home:hover {
-		background: none;
-	}
-	.site-header nav {
-		font-size: 26px;
+
+		&:hover {
+			background: none;
+		}
 	}
 	[aria-current='page'] {
 		text-decoration-style: dotted;
@@ -100,11 +107,5 @@ const current = path.startsWith('/category/') ? '/archive/' : path;
 	.site-footer {
 		margin-top: 72px;
 		font-size: 22px;
-	}
-	@media (max-width: 520px) {
-		.site-header {
-			align-items: flex-start;
-			gap: 16px;
-		}
 	}
 </style>

@@ -48,14 +48,15 @@ a {
 	color: var(--ink);
 	text-decoration-thickness: 2px;
 	text-underline-offset: 4px;
-}
-a:hover {
-	color: var(--ink-strong);
-	background: rgba(255, 255, 255, 0.6);
-}
-a:focus-visible {
-	outline: 3px solid var(--ink);
-	outline-offset: 2px;
+
+	&:hover {
+		color: var(--ink-strong);
+		background: rgba(255, 255, 255, 0.6);
+	}
+	&:focus-visible {
+		outline: 3px solid var(--ink);
+		outline-offset: 2px;
+	}
 }
 
 .vignette {
@@ -83,82 +84,90 @@ a:focus-visible {
 
 .prose {
 	overflow-wrap: break-word;
-}
-.prose > :first-child {
-	margin-top: 0;
-}
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4 {
-	font-weight: 400;
-	line-height: 1.05;
-	margin: 1.6em 0 0.4em;
-}
-.prose h2 {
-	font-size: 36px;
-}
-.prose h3 {
-	font-size: 30px;
-}
-.prose h4 {
-	font-size: 26px;
-}
-.prose p,
-.prose ul,
-.prose ol,
-.prose blockquote,
-.prose table,
-.prose figure {
-	margin: 0 0 0.8em;
-}
-.prose img {
-	display: block;
-	max-width: 100%;
-	height: auto;
-	margin: 1em 0;
-}
-.prose iframe,
-.prose video {
-	display: block;
-	width: 100%;
-	height: auto;
-	aspect-ratio: 16 / 9;
-	margin: 1em 0;
-	border: 3px solid var(--ink);
-	box-shadow: var(--shadow-light);
-}
-.prose blockquote {
-	padding-left: 1em;
-	border-left: 3px solid var(--ink);
-}
-.prose code,
-.prose pre {
-	font-family: var(--font);
-	background: rgba(255, 255, 255, 0.55);
-}
-.prose code {
-	padding: 0 0.2em;
-}
-.prose pre {
-	padding: 0.6em 0.8em;
-	overflow-x: auto;
-}
-.prose hr {
-	border: 0;
-	border-top: 3px dotted var(--ink);
-	margin: 1.6em 0;
-}
-.prose table {
-	display: block;
-	max-width: 100%;
-	overflow-x: auto;
-	border-collapse: collapse;
-}
-.prose td,
-.prose th {
-	padding: 0.4em 0.6em;
-	border: 2px solid var(--ink);
-	vertical-align: top;
-	text-align: left;
+
+	& > :first-child {
+		margin-top: 0;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-weight: 400;
+		line-height: 1.05;
+		margin: 1.6em 0 0.4em;
+	}
+	h2 {
+		font-size: 36px;
+	}
+	h3 {
+		font-size: 30px;
+	}
+	h4 {
+		font-size: 26px;
+	}
+
+	p,
+	ul,
+	ol,
+	blockquote,
+	table,
+	figure {
+		margin: 0 0 0.8em;
+	}
+
+	img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		margin: 1em 0;
+	}
+	iframe,
+	video {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		margin: 1em 0;
+		border: 3px solid var(--ink);
+		box-shadow: var(--shadow-light);
+	}
+
+	blockquote {
+		padding-left: 1em;
+		border-left: 3px solid var(--ink);
+	}
+
+	code,
+	pre {
+		font-family: var(--font);
+		background: rgba(255, 255, 255, 0.55);
+	}
+	code {
+		padding: 0 0.2em;
+	}
+	pre {
+		padding: 0.6em 0.8em;
+		overflow-x: auto;
+	}
+
+	hr {
+		border: 0;
+		border-top: 3px dotted var(--ink);
+		margin: 1.6em 0;
+	}
+
+	table {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		border-collapse: collapse;
+	}
+	td,
+	th {
+		padding: 0.4em 0.6em;
+		border: 2px solid var(--ink);
+		vertical-align: top;
+		text-align: left;
+	}
 }

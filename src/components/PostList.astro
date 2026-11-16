@@ -74,10 +74,11 @@ const excerpt = (text = '') => (text.length > 160 ? `${text.slice(0, 160).replac
 		font-size: 44px;
 		font-weight: 400;
 		line-height: 1;
-	}
-	h2 span {
-		font-size: 22px;
-		color: var(--ink-soft);
+
+		span {
+			font-size: 22px;
+			color: var(--ink-soft);
+		}
 	}
 	.cards {
 		margin: 0;
@@ -86,6 +87,10 @@ const excerpt = (text = '') => (text.length > 160 ? `${text.slice(0, 160).replac
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 		gap: 28px;
+
+		@media (max-width: 520px) {
+			grid-template-columns: minmax(0, 1fr);
+		}
 	}
 	.card {
 		height: 100%;
@@ -98,11 +103,18 @@ const excerpt = (text = '') => (text.length > 160 ? `${text.slice(0, 160).replac
 		transition:
 			transform 120ms steps(2),
 			box-shadow 120ms steps(2);
-	}
-	.card:hover {
-		background: rgba(255, 255, 255, 0.75);
-		transform: translate(-3px, -3px);
-		box-shadow: 7px 7px 0 0 var(--ink);
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.75);
+			transform: translate(-3px, -3px);
+			box-shadow: 7px 7px 0 0 var(--ink);
+
+			.title {
+				text-decoration: underline;
+				text-decoration-thickness: 2px;
+				text-underline-offset: 4px;
+			}
+		}
 	}
 	.visual {
 		display: block;
@@ -111,11 +123,12 @@ const excerpt = (text = '') => (text.length > 160 ? `${text.slice(0, 160).replac
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
 		border-bottom: 3px solid var(--ink);
-	}
-	/* coverFit: true in a post's front matter */
-	.visual.fit {
-		object-fit: contain;
-		background: transparent;
+
+		/* coverFit: true in a post's front matter */
+		&.fit {
+			object-fit: contain;
+			background: transparent;
+		}
 	}
 	.quote {
 		display: flex;
@@ -138,15 +151,5 @@ const excerpt = (text = '') => (text.length > 160 ? `${text.slice(0, 160).replac
 	}
 	.title {
 		line-height: 1.1;
-	}
-	.card:hover .title {
-		text-decoration: underline;
-		text-decoration-thickness: 2px;
-		text-underline-offset: 4px;
-	}
-	@media (max-width: 520px) {
-		.cards {
-			grid-template-columns: minmax(0, 1fr);
-		}
 	}
 </style>
