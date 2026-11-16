@@ -11,6 +11,7 @@ export const nav = [
 	{ href: '/trainings/', label: 'Trainings & Workshops' },
 	{ href: '/about/', label: 'About' },
 	{ href: '/contact/', label: 'Contact' },
+	{ href: '/stickers/', label: 'Stickers' },
 	{ href: '/archive/', label: 'Archive' },
 ];
 

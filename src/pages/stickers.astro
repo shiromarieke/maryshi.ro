@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+
+const stickers = await getCollection('posts', (p) => p.data.categories.includes('stickers'));
+---
+
+<Base title="Stickers" description="Stickers by Marie Kreil about privacy, surveillance, Tor and the tech industry, free to print." wide>
+	<h1>Stickers</h1>
+	<p class="intro">
+		Stickers I made over the years, about privacy, surveillance, Tor, big tech and the blockchain hype.
+		Print your own! The print-ready files (SVG and PDF) are on <a href="https://github.com/shiromarieke/shiro_stickers">GitHub ↗</a>.
+		Since 2018 I also collect the stickers I post in <a href="https://thestickerarchive.tumblr.com/">The Sticker Archive ↗</a>.
+	</p>
+	<PostList posts={stickers} />
+</Base>
+
+<style>
+	h1 {
+		margin: 0 0 16px;
+		font-size: 48px;
+		font-weight: 400;
+		line-height: 1;
+	}
+	.intro {
+		max-width: var(--measure);
+		margin: 0 0 56px;
+		font-size: 26px;
+		line-height: 1.25;
+	}
+</style>
